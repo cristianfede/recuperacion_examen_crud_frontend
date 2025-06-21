@@ -57,7 +57,7 @@
           <tr v-for="reserva in reservas" :key="reserva.id">
             <td>{{ reserva.cliente.nombre }}</td>
             <td>{{ reserva.habitacion.numero }}</td>
-            <td>{{ reserva.fecha_inicio }} a {{ reserva.fecha_fin }}</td>
+            <td>{{ reserva.fechaInicio }} a {{ reserva.fechaFin }}</td>
             <td>{{ reserva.estado }}</td>
             <td class="text-right">
               <v-btn color="green" class="mr-2" @click="cambiarEstado(reserva.id, 'confirmada')" size="small">
@@ -131,6 +131,7 @@ const cargarDatos = async () => {
 const cargarReservas = async () => {
   const response = await obtenerReservas()
   reservas.value = response
+  console.log(response)
 }
 
 const cargarClientes = async () => {
