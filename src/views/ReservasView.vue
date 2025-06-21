@@ -2,6 +2,17 @@
   <v-container>
     <h1 class="text-h4 mb-4">Reservas</h1>
 
+    <!-- Alerta de mensajes -->
+    <v-alert
+      v-if="mensaje"
+      :type="tipoMensaje"
+      class="mb-4"
+      closable
+      @click:close="mensaje = ''"
+    >
+      {{ mensaje }}
+    </v-alert>
+
     <!-- Formulario para crear reserva -->
     <v-form @submit.prevent="crear">
       <v-select
@@ -88,6 +99,10 @@ const clientes = ref<any[]>([])
 const habitaciones = ref<any[]>([])
 const datosCargados = ref(false)
 
+// Manejo de mensajes
+const mensaje = ref('')
+const tipoMensaje = ref<'success' | 'error'>('success')
+
 // Formulario de reserva
 const nuevaReserva = ref({
   cliente_id: null,
@@ -96,13 +111,12 @@ const nuevaReserva = ref({
   fecha_fin: ''
 })
 
-// Carga de datos en orden
+// Carga de datos
 const cargarDatos = async () => {
   await cargarClientes()
   await cargarHabitaciones()
   await cargarReservas()
 
-  // Establecer por defecto primer cliente y habitación si existen
   if (clientes.value.length > 0) {
     nuevaReserva.value.cliente_id = clientes.value[0].id
   }
@@ -129,25 +143,30 @@ const cargarHabitaciones = async () => {
   habitaciones.value = response
 }
 
-// CRUD básico
+// Crear reserva con manejo de errores
 const crear = async () => {
-  await crearReserva(nuevaReserva.value)
-  await cargarReservas()
+  try {
+    await crearReserva(nuevaReserva.value)
+    await cargarReservas()
 
-  // Encontrar índice actual del cliente y habitación
-  const clienteIndex = clientes.value.findIndex((c) => c.id === nuevaReserva.value.cliente_id)
-  const habitacionIndex = habitaciones.value.findIndex((h) => h.id === nuevaReserva.value.habitacion_id)
+    mensaje.value = 'Reserva creada exitosamente.'
+    tipoMensaje.value = 'success'
 
-  // Calcular siguiente índice (ciclo)
-  const siguienteCliente = clientes.value[(clienteIndex + 1) % clientes.value.length]
-  const siguienteHabitacion = habitaciones.value[(habitacionIndex + 1) % habitaciones.value.length]
+    const clienteIndex = clientes.value.findIndex((c) => c.id === nuevaReserva.value.cliente_id)
+    const habitacionIndex = habitaciones.value.findIndex((h) => h.id === nuevaReserva.value.habitacion_id)
 
-  // Reiniciar formulario con el siguiente cliente y habitación
-  nuevaReserva.value = {
-    cliente_id: siguienteCliente.id,
-    habitacion_id: siguienteHabitacion.id,
-    fecha_inicio: '',
-    fecha_fin: ''
+    const siguienteCliente = clientes.value[(clienteIndex + 1) % clientes.value.length]
+    const siguienteHabitacion = habitaciones.value[(habitacionIndex + 1) % habitaciones.value.length]
+
+    nuevaReserva.value = {
+      cliente_id: siguienteCliente.id,
+      habitacion_id: siguienteHabitacion.id,
+      fecha_inicio: '',
+      fecha_fin: ''
+    }
+  } catch (error: any) {
+    mensaje.value = error.response?.data?.message || 'Error al crear la reserva.'
+    tipoMensaje.value = 'error'
   }
 }
 
@@ -161,7 +180,7 @@ const cambiarEstado = async (id: number, nuevoEstado: string) => {
   await cargarReservas()
 }
 
-// Inicialización correcta
+// Inicialización
 onMounted(() => {
   cargarDatos()
 })

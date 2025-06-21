@@ -6,9 +6,9 @@
 
         <!-- Formulario para crear o editar habitación -->
         <v-form @submit.prevent="modoEdicion ? actualizar() : crear()">
-          <v-text-field v-model="formHabitacion.numero" label="Número" required />
+          <v-text-field v-model.number="formHabitacion.numero" label="Número" type="number" required />
           <v-text-field v-model="formHabitacion.tipo" label="Tipo" required />
-          <v-text-field v-model="formHabitacion.precio" label="Precio" type="number" required />
+          <v-text-field v-model.number="formHabitacion.precio" label="Precio" type="number" required />
           <v-btn type="submit" color="primary" class="mt-2">
             {{ modoEdicion ? 'Actualizar Habitación' : 'Agregar Habitación' }}
           </v-btn>
@@ -70,11 +70,11 @@ import {
 
 const habitaciones = ref<any[]>([])
 
-const formHabitacion = ref<{ id: number | null; numero: string; tipo: string; precio: string }>({
+const formHabitacion = ref<{ id: number | null; numero: number | null; tipo: string; precio: number | null }>({
   id: null,
-  numero: '',
+  numero: null,
   tipo: '',
-  precio: ''
+  precio: null
 })
 
 const modoEdicion = ref(false)
@@ -86,7 +86,7 @@ const cargarHabitaciones = async () => {
 
 const crear = async () => {
   await crearHabitacion(formHabitacion.value)
-  formHabitacion.value = { id: null, numero: '', tipo: '', precio: '' }
+  formHabitacion.value = { id: null, numero: null, tipo: '', precio: null }
   cargarHabitaciones()
 }
 
@@ -97,13 +97,13 @@ const editar = (habitacion: any) => {
 
 const actualizar = async () => {
   await actualizarHabitacion(formHabitacion.value.id!, formHabitacion.value)
-  formHabitacion.value = { id: null, numero: '', tipo: '', precio: '' }
+  formHabitacion.value = { id: null, numero: null, tipo: '', precio: null }
   modoEdicion.value = false
   cargarHabitaciones()
 }
 
 const cancelarEdicion = () => {
-  formHabitacion.value = { id: null, numero: '', tipo: '', precio: '' }
+  formHabitacion.value = { id: null, numero: null, tipo: '', precio: null }
   modoEdicion.value = false
 }
 
