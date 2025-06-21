@@ -14,6 +14,7 @@ import {RouterView } from 'vue-router'
       <v-btn variant="text" to="/clientes" router>Clientes</v-btn>
       <v-btn variant="text" to="/habitaciones" router>Habitaciones</v-btn>
       <v-btn variant="text" to="/reservas" router>Reservas</v-btn>
+      <v-btn variant="text" to="/calendario" router>Calendario</v-btn>
     </v-app-bar>
 
     <!-- Contenido de las vistas -->

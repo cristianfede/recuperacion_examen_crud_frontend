@@ -131,7 +131,7 @@ const cargarDatos = async () => {
 const cargarReservas = async () => {
   const response = await obtenerReservas()
   reservas.value = response
-  console.log(response)
+  console.log('Reservas obtenidas:', response)
 }
 
 const cargarClientes = async () => {
