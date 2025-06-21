@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-row justify="center">
-      <v-col cols="12" md="8" lg="6">
+      <v-col cols="12" md="10" lg="8">
         <h1 class="text-h4 mb-4">Clientes</h1>
 
         <!-- Formulario para crear o editar cliente -->
